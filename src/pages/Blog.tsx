@@ -15,22 +15,24 @@ const Blog = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   // Using your specific Medium handle
-  const MEDIUM_FEED_URL = "https://medium.com/feed/@eh_music";
+  // const MEDIUM_FEED_URL = "https://medium.com/feed/@eh_music";
 
-  useEffect(() => {
-    fetch(`https://api.rss2json.com/v1/api.json?rss_url=${MEDIUM_FEED_URL}&t=${Date.now()}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.status === "ok") {
-          setPosts(data.items);
-        }
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching Medium feed:", err);
-        setIsLoading(false);
-      });
-  }, []);
+// Inside useEffect in Blog.tsx
+useEffect(() => {
+  // Point to your new Netlify Function relative path
+  fetch("/.netlify/functions/get-medium-feed")
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.status === "ok") {
+        setPosts(data.items);
+      }
+      setIsLoading(false);
+    })
+    .catch((err) => {
+      console.error("Error:", err);
+      setIsLoading(false);
+    });
+}, []);
 
   return (
     <>
